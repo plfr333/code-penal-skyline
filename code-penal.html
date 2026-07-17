@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Pénal — Édition consolidée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12161f;
+    --ink-2:#1c2230;
+    --parchment:#f3efe4;
+    --parchment-2:#eae4d4;
+    --brass:#b8912f;
+    --brass-light:#d9b45a;
+    --line:#3a4256;
+    --line-light:#d8d0ba;
+    --text-soft:#8a90a3;
+    --text-onparch:#3c3830;
+
+    --t-infraction:#6b7280;
+    --t-delit:#b8912f;
+    --t-delit-grave:#c2410c;
+    --t-financier:#0f6e6e;
+    --t-organise:#6b2142;
+    --t-personne:#7f1d1d;
+    --t-capital:#450a0a;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Newsreader', serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{background:var(--brass); color:var(--ink);}
+
+  /* ---------- HEADER ---------- */
+  header.masthead{
+    position:relative;
+    margin:20px 20px 0;
+    padding:56px 6vw 40px;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(184,145,47,0.14), transparent 55%),
+      var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:28px;
+    overflow:hidden;
+  }
+  header.masthead::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+  }
+  .masthead-inner{position:relative; max-width:1140px; margin:0 auto;}
+  .masthead-top{display:flex; align-items:flex-start; gap:28px;}
+  .seal{
+    flex:none; width:76px; height:76px;
+    border-radius:50%;
+    border:1.5px solid var(--brass-light);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .seal::before{
+    content:"";
+    position:absolute; inset:6px;
+    border:1px solid rgba(217,180,90,0.45);
+    border-radius:50%;
+  }
+  .seal svg{width:34px; height:34px;}
+  .masthead-titles{flex:1; min-width:0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--brass-light);
+    margin:0 0 10px;
+  }
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(34px, 5vw, 58px);
+    line-height:1.03;
+    margin:0 0 14px;
+    color:var(--parchment);
+    letter-spacing:-0.01em;
+  }
+  .title em{font-style:italic; color:var(--brass-light); font-weight:400;}
+  .masthead-sub{
+    max-width:640px;
+    font-size:16.5px;
+    line-height:1.6;
+    color:#c7c2ae;
+    margin:0 0 26px;
+  }
+  .meta-strip{
+    display:flex; flex-wrap:wrap; gap:10px 28px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--text-soft);
+    padding-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .meta-strip b{color:var(--brass-light); font-weight:600;}
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 6vw;
+    display:grid;
+    grid-template-columns:250px 1fr;
+    gap:52px;
+    align-items:start;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  aside.toc{
+    position:sticky; top:0;
+    padding:34px 0 34px 0;
+    max-height:100vh;
+    overflow-y:auto;
+  }
+  .search-wrap{margin-bottom:22px;}
+  .search-wrap input{
+    width:100%;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--parchment);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    padding:10px 14px;
+    border-radius:12px;
+    outline:none;
+  }
+  .search-wrap input::placeholder{color:var(--text-soft);}
+  .search-wrap input:focus{border-color:var(--brass);}
+  nav.toc-list{display:flex; flex-direction:column; gap:2px;}
+  nav.toc-list a{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:8px 10px;
+    color:#a9aebd;
+    text-decoration:none;
+    font-size:13px;
+    border-left:2px solid transparent;
+    border-radius:10px;
+    line-height:1.35;
+    transition:background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  nav.toc-list a:hover{background:rgba(255,255,255,0.03); color:var(--parchment);}
+  nav.toc-list a.active{
+    color:var(--parchment);
+    border-left-color:var(--brass);
+    background:rgba(184,145,47,0.08);
+  }
+  nav.toc-list a .count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-soft);
+  }
+  .toc-dot{width:7px; height:7px; border-radius:50%; flex:none;}
+
+  /* ---------- MAIN ---------- */
+  main{padding:34px 0 90px;}
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:14px 22px;
+    padding:16px 18px;
+    margin-bottom:44px;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-soft);
+  }
+  .legend-item{display:flex; align-items:center; gap:7px;}
+  .legend-swatch{width:9px; height:9px; border-radius:50%;}
+
+  section.category{margin-bottom:58px; scroll-margin-top:24px;}
+  .category-head{
+    display:flex; align-items:baseline; gap:16px;
+    margin-bottom:6px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .category-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass-light);
+    flex:none;
+  }
+  h2.category-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0;
+    color:var(--parchment);
+  }
+  .category-count{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-soft);
+    flex:none;
+  }
+
+  .articles{display:flex; flex-direction:column; gap:0;}
+
+  .article{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:24px;
+    padding:20px 22px;
+    margin-bottom:10px;
+    background:rgba(255,255,255,0.025);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:16px;
+    scroll-margin-top:24px;
+  }
+  .article:last-child{margin-bottom:0;}
+  .article-id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--text-soft);
+    padding-top:3px;
+  }
+  .article-id .num{
+    display:block;
+    font-size:20px;
+    color:var(--parchment);
+    margin-bottom:6px;
+    font-weight:500;
+  }
+  .tier-chip{
+    display:inline-block;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border-radius:8px;
+    border:1px solid currentColor;
+  }
+  .article-body h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:19px;
+    margin:0 0 12px;
+    color:var(--parchment);
+    line-height:1.3;
+  }
+  .article-facts{
+    display:flex; flex-wrap:wrap; gap:10px 26px;
+    margin-bottom:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+  }
+  .fact{display:flex; align-items:baseline; gap:6px;}
+  .fact-label{color:var(--text-soft); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em;}
+  .fact-val{color:var(--brass-light); font-weight:600;}
+  .fact-val.prison{color:#c9a4a4;}
+  .article-remark{
+    font-size:14.5px;
+    line-height:1.55;
+    color:#b9b4a2;
+    margin:0;
+  }
+  .article-remark:empty{display:none;}
+
+  .no-results{
+    display:none;
+    padding:60px 0;
+    text-align:center;
+    color:var(--text-soft);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:40px 6vw 60px;
+    border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-soft);
+    line-height:1.7;
+  }
+
+  /* ---------- MOBILE ---------- */
+  .toc-toggle{
+    display:none;
+    width:100%;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--parchment);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:12px 14px;
+    border-radius:12px;
+    text-align:left;
+    margin-bottom:14px;
+    cursor:pointer;
+  }
+
+  @media (max-width: 880px){
+    .layout{grid-template-columns:1fr; gap:0;}
+    aside.toc{
+      position:relative; top:auto; max-height:none;
+      padding:20px 0 0;
+      display:none;
+    }
+    aside.toc.open{display:block;}
+    .toc-toggle{display:block;}
+    .article{grid-template-columns:1fr; gap:8px;}
+    .article-id .num{font-size:17px; margin-bottom:4px;}
+    header.masthead{padding:44px 6vw 32px;}
+    .masthead-top{gap:18px;}
+    .seal{width:56px; height:56px;}
+    .seal svg{width:26px; height:26px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-top">
+      <div class="seal" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="15.5" r="2.1" fill="#f3efe4" stroke="#d9b45a" stroke-width="1"/>
+          <path d="M18.2 15.9 L15.5 17 L18.2 18.1 Z" fill="#d9b45a"/>
+          <path d="M20 17.5 C15.5 19 14.3 25 16.3 30 L23.7 30 C25.7 25 24.5 19 20 17.5 Z" stroke="#d9b45a" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M17.6 19.5 C10.5 17 5 19.5 2 22.5" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <path d="M17.6 21.2 C11 20.3 6 22.8 3.3 26.3" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <path d="M22.4 19.5 C29.5 17 35 19.5 38 22.5" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <path d="M22.4 21.2 C29 20.3 34 22.8 36.7 26.3" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <line x1="20" y1="30.5" x2="20" y2="34.5" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <line x1="16.5" y1="32" x2="23.5" y2="32" stroke="#d9b45a" stroke-width="1.1" stroke-linecap="round"/>
+          <path d="M16.5 32 L15 34.5 A2 2 0 0 0 18 34.5 Z" stroke="#d9b45a" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M23.5 32 L22 34.5 A2 2 0 0 0 25 34.5 Z" stroke="#d9b45a" stroke-width="1" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="masthead-titles">
+        <p class="eyebrow">Ministère public — Bureau du Procureur Général</p>
+        <h1 class="title">Code Pénal <em>consolidé</em></h1>
+        <p class="masthead-sub">Barème des peines et amendes en vigueur. Classé par livre, article par article, à l'usage du BCSO, du LSPD et de toute autorité judiciaire compétente.</p>
+      </div>
+    </div>
+    <div class="meta-strip">
+      <span>Édition en vigueur — <b>2026</b></span>
+      <span>Articles consolidés — <b id="meta-count">—</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc">
+    <button class="toc-toggle" id="tocToggle">☰ Sommaire des articles</button>
+    <div id="tocPanel">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Rechercher un article…" autocomplete="off">
+      </div>
+      <nav class="toc-list" id="tocList"></nav>
+    </div>
+  </aside>
+
+  <main>
+    <div class="legend" id="legend"></div>
+    <div id="categories"></div>
+    <p class="no-results" id="noResults">Aucun article ne correspond à cette recherche.</p>
+  </main>
+</div>
+
+<footer>
+  <p>Ce document consolide l'ensemble des contraventions, délits mineurs, délits majeurs et crimes applicables, avec leurs amendes et peines minimales. Toute mise à jour du barème doit faire l'objet d'une validation conjointe entre le Bureau du Procureur Général, le BCSO et le LSPD.</p>
+</footer>
+
+<script>
+const TIERS = {
+  contravention: { label: "Contravention",  color: "#6b7280" },
+  delitMineur:   { label: "Délit mineur",    color: "#b8912f" },
+  delitMajeur:   { label: "Délit majeur",    color: "#c2410c" },
+  crime:         { label: "Crime",           color: "#7f1d1d" },
+};
+
+const DATA = [
+{ title: "Contraventions", tier: "contravention", articles: [
+  ["CV-01","Atteinte à la pudeur","300 $","0,00",""],
+  ["CV-02","Atteinte à la pudeur (cas aggravé)","750 $","0,00",""],
+  ["CV-03","Atterrissage d'un avion ou hélicoptère sur un site inapproprié à son utilisation","350 $","0,00",""],
+  ["CV-04","Conduite avec un véhicule non en état (plaque, dégradé...)","300 $","0,00",""],
+  ["CV-05","Conduite en contre-sens","350 $","0,00",""],
+  ["CV-06","Conduite en dehors des chemins","350 $","0,00",""],
+  ["CV-07","Conduite en état d'ivresse","650 $","0,00",""],
+  ["CV-08","Conduite sous l'emprise de stupéfiants","1 000 $","0,00",""],
+  ["CV-09","Dégradation de biens publics/privés","500 $","0,00",""],
+  ["CV-10","Dépassement dangereux (drift, wheeling...)","350 $","0,00",""],
+  ["CV-11","Dissimulation du visage sur la voie publique","500 $","0,00",""],
+  ["CV-12","Dissimulation du visage sur la voie publique (cas aggravé)","700 $","0,00",""],
+  ["CV-13","Excès de vitesse inférieur à 5 km/h","100 $","0,00",""],
+  ["CV-14","Excès de vitesse de 5 à 15 km/h","200 $","0,00",""],
+  ["CV-15","Excès de vitesse de 20 à 50 km/h","500 $","0,00",""],
+  ["CV-16","Excès de vitesse de +51 km/h","750 $","0,00",""],
+  ["CV-17","Faux appels (canulars)","500 $","0,00",""],
+  ["CV-18","Franchissement d'une ligne continue","300 $","0,00",""],
+  ["CV-19","Insulte envers un civil","500 $","0,00",""],
+  ["CV-20","Ivresse publique","500 $","0,00",""],
+  ["CV-21","Mendicité","300 $","0,00",""],
+  ["CV-22","Non-respect de la signalisation","150 $","0,00",""],
+  ["CV-23","Non-respect d'un stop","150 $","0,00",""],
+  ["CV-24","Non-respect d'un véhicule prioritaire","500 $","0,00",""],
+  ["CV-25","Non-respect des distances de sécurité","500 $","0,00",""],
+  ["CV-26","Non-respect des distances de sécurité (1,5 m)","350 $","0,00",""],
+  ["CV-27","Participation à une manifestation illégale","650 $","0,00",""],
+  ["CV-28","Refus de présentation d'une carte d'identité","200 $","0,00",""],
+  ["CV-29","Stationnement gênant","300 $","0,00",""],
+  ["CV-30","Stationnement gênant et/ou interdit (bande rouge)","350 $","0,00",""],
+  ["CV-31","Usage abusif du klaxon","400 $","0,00",""],
+  ["CV-32","Véhicule dégradé","350 $","0,00",""],
+  ["CV-33","Vente sans autorisation légale","800 $","0,00",""],
+]},
+{ title: "Délits mineurs", tier: "delitMineur", articles: [
+  ["DM-01","Arme blanche sortie en public","1 000 $","5,00",""],
+  ["DM-02","Agression sur citoyen / Maltraitance animale","1 200 $","10,00",""],
+  ["DM-03","Braquage de citoyen","1 200 $","10,00",""],
+  ["DM-04","Braquage de supérette","1 000 $","10,00",""],
+  ["DM-05","Braquage d'ATM","1 000 $","10,00",""],
+  ["DM-06","Cambriolage","1 000 $","10,00",""],
+  ["DM-07","Chantage","750 $","5,00",""],
+  ["DM-08","Combat clandestin","750 $","5,00",""],
+  ["DM-09","Conduite d'un véhicule volé","750 $","5,00",""],
+  ["DM-10","Conduite sans permis","650 $","5,00",""],
+  ["DM-11","Course de rue illégale","650 $","5,00",""],
+  ["DM-12","Dégradation de biens privés","500 $","5,00",""],
+  ["DM-13","Dégradation de biens publics","500 $","5,00",""],
+  ["DM-14","Dégradation de matériels publics","500 $","5,00",""],
+  ["DM-15","Délit de fuite","1 000 $","10,00",""],
+  ["DM-16","Diffamation","750 $","10,00",""],
+  ["DM-17","Dissimulation du visage sur la voie publique","750 $","5,00",""],
+  ["DM-18","Entrave à la Cour et/ou au jugement","1 500 $","15,00",""],
+  ["DM-19","Entrave à l'espace aérien","750 $","5,00",""],
+  ["DM-20","Entrave à une enquête ou opération","750 $","5,00",""],
+  ["DM-21","Entrave aux opérations gouvernementales","750 $","5,00",""],
+  ["DM-22","Entrave à une opération des forces de l'ordre","750 $","5,00",""],
+  ["DM-23","Entrave / Obstruction à la Justice","750 $","5,00",""],
+  ["DM-24","Exhibition d'arme","1 500 $","10,00",""],
+  ["DM-25","Exhibition d'arme lourde","3 000 $","15,00",""],
+  ["DM-26","Extorsion / Escroquerie","1 200 $","10,00",""],
+  ["DM-27","Go Fast","1 000 $","10,00",""],
+  ["DM-28","Harcèlement","1 000 $","10,00",""],
+  ["DM-29","Intrusion dans un bâtiment officiel de l'État","1 200 $","15,00",""],
+  ["DM-30","Menace ou intimidation envers un civil","1 000 $","10,00",""],
+  ["DM-31","Menace ou intimidation envers un représentant de l'état","1 500 $","15,00",""],
+  ["DM-32","Mise en danger de la vie d'autrui","1 000 $","10,00",""],
+  ["DM-33","Non-assistance à personne en danger","750 $","5,00",""],
+  ["DM-34","Non-dénonciation d'un crime","750 $","5,00",""],
+  ["DM-35","Non-présentation à une convocation Police / Justice","750 $","5,00",""],
+  ["DM-36","Non-respect d'un contrôle judiciaire","1 000 $","5,00",""],
+  ["DM-37","Obstruction à l'espace maritime","750 $","5,00",""],
+  ["DM-38","Organisation d'une manifestation illégale","750 $","5,00",""],
+  ["DM-39","Outrage à agent","1 000 $","10,00",""],
+  ["DM-40","Outrage à magistrat","1 200 $","10,00",""],
+  ["DM-41","Outrage envers un représentant de l'État","1 200 $","10,00",""],
+  ["DM-42","Port d'un gilet pare-balles sans autorisation","750 $","5,00",""],
+  ["DM-43","Possession de boîtier de piratage","300 $","0,00",""],
+  ["DM-44","Possession de weed < 10","100 $","0,00",""],
+  ["DM-45","Possession de meth < 10","150 $","0,00",""],
+  ["DM-46","Possession de cocaïne < 10","200 $","0,00",""],
+  ["DM-47","Possession de perçeuse","1 000 $","0,00",""],
+  ["DM-48","Possession de cutter","1 200 $","0,00",""],
+  ["DM-49","Possession ou flagrant délit de crochetage","750 $","10,00",""],
+  ["DM-50","Recel de véhicule volé","750 $","5,00",""],
+  ["DM-51","Recel de vol (objets ou armes légales)","750 $","5,00",""],
+  ["DM-52","Refus de comparaître","750 $","5,00",""],
+  ["DM-53","Refus d'obtempérer","750 $","10,00",""],
+  ["DM-54","Tentative de vol de véhicule","750 $","5,00",""],
+  ["DM-55","Trafic de stupéfiants","1 500 $","15,00",""],
+  ["DM-56","Trouble à l'ordre public","1 000 $","10,00",""],
+  ["DM-57","Usurpation d'identité ou de fonction","1 000 $","10,00",""],
+  ["DM-58","Utilisation ou présentation de faux papiers","1 000 $","10,00",""],
+  ["DM-59","Vente de drogue","1 000 $","10,00",""],
+  ["DM-60","Vente d'objets illégaux","1 000 $","10,00",""],
+  ["DM-61","Violation de propriété privée","750 $","5,00",""],
+  ["DM-62","Vol","1 000 $","5,00",""],
+  ["DM-63","Vol d'équipements d'entreprise","750 $","5,00",""],
+  ["DM-64","Vol de produits d'entreprise","750 $","5,00",""],
+  ["DM-65","Vol de véhicule","750 $","5,00",""],
+  ["DM-66","Vol de véhicule d'entreprise","750 $","10,00",""],
+  ["DM-67","Vol de véhicule de service public","1 500 $","10,00",""],
+]},
+{ title: "Délits majeurs", tier: "delitMajeur", articles: [
+  ["DJ-01","Abus de pouvoir","2 000 $","15,00",""],
+  ["DJ-02","Achat d'armes illégales","3 500 $","15,00",""],
+  ["DJ-03","Agression sur agent (État / Police)","2 500 $","20,00",""],
+  ["DJ-04","Agression sur un civil","2 000 $","15,00",""],
+  ["DJ-05","Agression sur un représentant de l'État","2 500 $","20,00",""],
+  ["DJ-06","Arme létale sortie en public","3 000 $","15,00",""],
+  ["DJ-07","Association de malfaiteurs","2 000 $","10,00",""],
+  ["DJ-08","Attaque de convoi de fonds","3 500 $","15,00",""],
+  ["DJ-09","Braquage à main armée (bijouterie)","6 500 $","15,00",""],
+  ["DJ-10","Braquage d'armurerie","3 000 $","10,00",""],
+  ["DJ-11","Braquage de banque centrale","5 000 $","15,00",""],
+  ["DJ-12","Braquage Fleeca","3 000 $","10,00",""],
+  ["DJ-13","Chantage","2 000 $","10,00",""],
+  ["DJ-14","Corruption","4 500 $","15,00",""],
+  ["DJ-15","Coup et blessures sur dépositaire de l'autorité publique","3 000 $","15,00",""],
+  ["DJ-16","Destruction ou dissimulation de preuve","4 500 $","15,00",""],
+  ["DJ-17","Diffamation","4 000 $","15,00",""],
+  ["DJ-18","Discrimination","4 000 $","15,00",""],
+  ["DJ-19","Divulgation d'informations confidentielles","5 000 $","15,00",""],
+  ["DJ-20","Entreposage d'armes illégales (3+)","6 000 $","20,00",""],
+  ["DJ-21","Entrave à une enquête judiciaire","3 000 $","15,00",""],
+  ["DJ-22","Entrave aux services publics","3 000 $","15,00",""],
+  ["DJ-23","Escroquerie à l'entreprise","3 000 $","15,00",""],
+  ["DJ-24","Escroquerie à la personne","2 000 $","15,00",""],
+  ["DJ-25","Extorsion / Escroquerie","2 000 $","15,00",""],
+  ["DJ-26","Fabrication de stupéfiants","2 500 $","15,00",""],
+  ["DJ-27","Falsification de document officiel","4 000 $","20,00",""],
+  ["DJ-28","Faux témoignage / Parjure","6 000 $","20,00",""],
+  ["DJ-29","Homicide involontaire","6 000 $","20,00",""],
+  ["DJ-30","Immigration illégale","2 500 $","15,00",""],
+  ["DJ-31","Incendie criminel","4 000 $","20,00",""],
+  ["DJ-32","Intimidation / Chantage envers un magistrat","4 000 $","20,00",""],
+  ["DJ-33","Kidnapping / Séquestration","4 000 $","20,00",""],
+  ["DJ-34","Menaces de mort","2 500 $","15,00",""],
+  ["DJ-35","Non-assistance à personne en danger","2 000 $","10,00",""],
+  ["DJ-36","Non-paiement d'un salaire","2 000 $","10,00",""],
+  ["DJ-37","Non-présentation du contrat de travail","2 000 $","10,00",""],
+  ["DJ-38","Non-respect d'une décision de justice","2 000 $","10,00",""],
+  ["DJ-39","Non-respect d'une mesure d'éloignement","2 000 $","10,00",""],
+  ["DJ-40","Non-respect des consignes de l'État d'urgence","2 500 $","10,00",""],
+  ["DJ-41","Non-respect des licences et papiers officiels","2 000 $","10,00",""],
+  ["DJ-42","Non-respect des normes incendie","2 000 $","10,00",""],
+  ["DJ-43","Obstruction à la Justice","2 500 $","10,00",""],
+  ["DJ-44","Organisation d'insolvabilité","2 500 $","10,00",""],
+  ["DJ-45","Outrage à magistrat","2 500 $","15,00",""],
+  ["DJ-46","Outrage à un employé d'État","2 500 $","15,00",""],
+  ["DJ-47","Participation à une fusillade","2 000 $","15,00",""],
+  ["DJ-48","Port d'arme illégale","2 500 $","15,00",""],
+  ["DJ-49","Prise d'otage sur un civil","2 500 $","10,00",""],
+  ["DJ-50","Prise d'otage sur magistrat","5 000 $","15,00",""],
+  ["DJ-51","Prise d'otage sur représentant de l'État","4 000 $","15,00",""],
+  ["DJ-52","Recel de malfaiteurs","2 500 $","10,00",""],
+  ["DJ-53","Sollicitation ou incitation à la prostitution","3 000 $","15,00",""],
+  ["DJ-54","Témoignage mensonger à but lucratif","2 500 $","20,00",""],
+  ["DJ-55","Tir sur agent de l'État","3 000 $","15,00",""],
+  ["DJ-56","Tir sur civil","2 500 $","15,00",""],
+  ["DJ-57","Usage de faux","2 500 $","10,00",""],
+  ["DJ-58","Usurpation d'identité","3 000 $","15,00",""],
+  ["DJ-59","Usurpation d'identité d'un magistrat","5 000 $","20,00",""],
+  ["DJ-60","Usurpation d'uniforme (fonction privée)","3 000 $","15,00",""],
+  ["DJ-61","Usurpation d'uniforme (fonction publique)","3 000 $","15,00",""],
+  ["DJ-62","Utilisation de sa fonction à des fins personnelles","4 000 $","20,00",""],
+  ["DJ-63","Utilisation / port d'équipement illégal","4 000 $","20,00",""],
+  ["DJ-64","Vente d'armes illégales","7 000 $","25,00",""],
+  ["DJ-65","Vente de produits illégaux","3 000 $","15,00",""],
+  ["DJ-66","Violence animalière","2 500 $","15,00",""],
+  ["DJ-67","Violence avec arme à feu","3 000 $","15,00",""],
+  ["DJ-68","Violence avec arme blanche","2 500 $","15,00",""],
+  ["DJ-69","Vol à main armée","2 500 $","15,00",""],
+]},
+{ title: "Crimes", tier: "crime", articles: [
+  ["CR-01","Acte lié au terrorisme","10 000 $","40,00",""],
+  ["CR-02","Assassinat (meurtre prémédité)","12 000 $","40,00",""],
+  ["CR-03","Assistance / Participation à un crime contre l'État","9 500 $","30,00",""],
+  ["CR-04","Atteinte à la sécurité intérieure","8 000 $","30,00",""],
+  ["CR-05","Atteinte aux institutions de la Nation","10 000 $","30,00",""],
+  ["CR-06","Atteinte aux intérêts fondamentaux de la Nation","12 000 $","40,00",""],
+  ["CR-07","Cavale","12 000 $","40,00",""],
+  ["CR-08","Complicité de meurtre","10 000 $","30,00",""],
+  ["CR-09","Corruption","12 000 $","30,00",""],
+  ["CR-10","Détournement de fonds","15 000 $","30,00",""],
+  ["CR-11","Espionnage","8 000 $","25,00",""],
+  ["CR-12","Évasion","15 000 $","40,00",""],
+  ["CR-13","Évasion / Organisation d'évasion","10 000 $","30,00",""],
+  ["CR-14","Fraude fiscale","8 000 $","25,00",""],
+  ["CR-15","Meurtre","10 000 $","25,00",""],
+  ["CR-16","Meurtre sur civil","10 000 $","25,00",""],
+  ["CR-17","Meurtre sur fonctionnaire","12 000 $","30,00",""],
+  ["CR-18","Meurtre sur représentant de l'État","12 000 $","30,00",""],
+  ["CR-19","Multiples kidnappings / séquestrations","15 000 $","30,00",""],
+  ["CR-20","Possession de bombe collante","5 000 $","5,00",""],
+  ["CR-21","Possession de GAZ BZ","5 000 $","5,00",""],
+  ["CR-22","Possession de grenade","5 000 $","5,00",""],
+  ["CR-23","Pratique illégale de la médecine","10 000 $","10,00",""],
+  ["CR-24","Procurer frauduleusement un document administratif","10 000 $","10,00",""],
+  ["CR-25","Terrorisme","15 000 $","40,00",""],
+  ["CR-26","Torture","15 000 $","40,00",""],
+  ["CR-27","Trafic d'armes à grande échelle","10 000 $","30,00",""],
+  ["CR-28","Trafic d'organes","10 000 $","30,00",""],
+  ["CR-29","Trahison","8 000 $","30,00",""],
+  ["CR-30","Travail dissimulé","10 000 $","25,00",""],
+  ["CR-31","Vente illégale d'armes","10 000 $","30,00",""],
+  ["CR-32","Violation d'un ordre ou décret gouvernemental","10 000 $","25,00",""],
+  ["CR-33","Violation du secret professionnel","10 000 $","25,00",""],
+]},
+];
+
+// ---------- RENDER ----------
+const categoriesEl = document.getElementById('categories');
+const tocListEl = document.getElementById('tocList');
+const legendEl = document.getElementById('legend');
+let totalArticles = 0;
+
+Object.entries(TIERS).forEach(([key, t]) => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<span class="legend-swatch" style="background:${t.color}"></span>${t.label}`;
+  legendEl.appendChild(item);
+});
+
+DATA.forEach((cat, ci) => {
+  totalArticles += cat.articles.length;
+  const catId = 'cat-' + ci;
+  const tier = TIERS[cat.tier];
+
+  const section = document.createElement('section');
+  section.className = 'category';
+  section.id = catId;
+
+  const head = document.createElement('div');
+  head.className = 'category-head';
+  head.innerHTML = `
+    <span class="category-num">Livre ${ci + 1}</span>
+    <h2 class="category-title">${cat.title}</h2>
+    <span class="category-count">${cat.articles.length} article${cat.articles.length > 1 ? 's' : ''}</span>
+  `;
+  section.appendChild(head);
+
+  const articlesWrap = document.createElement('div');
+  articlesWrap.className = 'articles';
+
+  cat.articles.forEach(([num, name, amende, prison, remark]) => {
+    const art = document.createElement('div');
+    art.className = 'article';
+    art.dataset.search = (num + ' ' + name).toLowerCase();
+    art.innerHTML = `
+      <div class="article-id">
+        <span class="num">Art. ${num}</span>
+        <span class="tier-chip" style="color:${tier.color}">${tier.label}</span>
+      </div>
+      <div class="article-body">
+        <h3>${name}</h3>
+        <div class="article-facts">
+          <span class="fact"><span class="fact-label">Amende</span><span class="fact-val">${amende}</span></span>
+          <span class="fact"><span class="fact-label">Prison min.</span><span class="fact-val prison">${prison}</span></span>
+        </div>
+        <p class="article-remark">${remark}</p>
+      </div>
+    `;
+    articlesWrap.appendChild(art);
+  });
+
+  section.appendChild(articlesWrap);
+  categoriesEl.appendChild(section);
+
+  const link = document.createElement('a');
+  link.href = '#' + catId;
+  link.dataset.target = catId;
+  link.innerHTML = `
+    <span style="display:flex;align-items:center;gap:8px;">
+      <span class="toc-dot" style="background:${tier.color}"></span>${cat.title}
+    </span>
+    <span class="count">${cat.articles.length}</span>
+  `;
+  tocListEl.appendChild(link);
+});
+
+document.getElementById('meta-count').textContent = totalArticles + ' articles';
+
+// ---------- ACTIVE TOC ON SCROLL ----------
+const tocLinks = Array.from(tocListEl.querySelectorAll('a'));
+const sections = Array.from(document.querySelectorAll('section.category'));
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.toggle('active', l.dataset.target === entry.target.id));
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// ---------- SEARCH ----------
+const searchInput = document.getElementById('searchInput');
+const noResults = document.getElementById('noResults');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  let visibleTotal = 0;
+  sections.forEach(section => {
+    let visibleInCat = 0;
+    section.querySelectorAll('.article').forEach(art => {
+      const match = !q || art.dataset.search.includes(q);
+      art.style.display = match ? '' : 'none';
+      if (match) visibleInCat++;
+    });
+    section.style.display = visibleInCat ? '' : 'none';
+    visibleTotal += visibleInCat;
+  });
+  noResults.style.display = visibleTotal ? 'none' : 'block';
+});
+
+// ---------- MOBILE TOC TOGGLE ----------
+const tocToggle = document.getElementById('tocToggle');
+const tocEl = document.querySelector('aside.toc');
+tocToggle.addEventListener('click', () => tocEl.classList.toggle('open'));
+tocLinks.forEach(l => l.addEventListener('click', () => {
+  if (window.innerWidth <= 880) tocEl.classList.remove('open');
+}));
+</script>
+
+</body>
+</html>
